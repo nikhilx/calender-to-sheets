@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Import</title>
+  <base target="_top">
+  <style>
+        body {
+        font-family: Arial, sans-serif;
+        padding: 15px;
+        background-color: #f7f7f7;
+      }
+      label {
+        display: block;
+        margin: 10px 0;
+      }
+      input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-bottom: 10px;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        display: block;
+        margin: 15px auto;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+  </style>
+</head>
+<body>
+  <h3>Import Attributes</h3>
+  Start Date: <input type="date" id="startDate"><br>
+  End Date: <input type="date" id="endDate"><br>
+  <button onclick="submitAttributes()">Import</button>
+  <script>
+    var date = new Date();
+    var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    // Adjust for the time zone offset
+    firstDay.setMinutes(firstDay.getMinutes() - firstDay.getTimezoneOffset());
+    lastDay.setMinutes(lastDay.getMinutes() - lastDay.getTimezoneOffset());
+
+    // Convert to YYYY-MM-DD format
+    firstDay = firstDay.toISOString().split('T')[0];
+    lastDay = lastDay.toISOString().split('T')[0];
+
+    // Pre-fill the startDate and endDate
+    document.getElementById('startDate').value = firstDay;
+    document.getElementById('endDate').value = lastDay;
+
+    function submitAttributes() {
+      var startDate = document.getElementById('startDate').value;
+      var endDate = document.getElementById('endDate').value;
+      google.script.run.withSuccessHandler(closeDialog).importCalendarEntries(startDate, endDate);
+    }
+
+    function closeDialog() {
+      google.script.host.close();
+    }
+  </script>
+</body>
+</html>

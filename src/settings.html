@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Settings</title>
+  <base target="_top">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 15px;
+      background-color: #f7f7f7;
+    }
+    label {
+      display: block;
+      margin: 10px 0;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      display: block;
+      margin: 15px auto;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h3>Settings</h3>
+  Calendar ID: <input type="text" id="calendarId"><br>
+  Zoho Employee ID: <input type="text" id="employeeId"><br>
+  <h4>Color Mappings:</h4>
+  <div>
+    <label>PALE BLUE</label>
+    Project: <input type="text" id="PALE_BLUE_project"><br>
+    Job: <input type="text" id="PALE_BLUE_job"><br>
+  </div>
+  <div>
+    <label>PALE RED</label>
+    Project: <input type="text" id="PALE_RED_project"><br>
+    Job: <input type="text" id="PALE_RED_job"><br>
+  </div>
+  <div>
+    <label>PALE GREEN</label>
+    Project: <input type="text" id="PALE_GREEN_project"><br>
+    Job: <input type="text" id="PALE_GREEN_job"><br>
+  </div>
+  <div>
+    <label>MAUVE</label>
+    Project: <input type="text" id="MAUVE_project"><br>
+    Job: <input type="text" id="MAUVE_job"><br>
+  </div>
+  <div>
+    <label>YELLOW</label>
+    Project: <input type="text" id="YELLOW_project"><br>
+    Job: <input type="text" id="YELLOW_job"><br>
+  </div>
+  <div>
+    <label>CYAN</label>
+    Project: <input type="text" id="CYAN_project"><br>
+    Job: <input type="text" id="CYAN_job"><br>
+  </div>
+  <button onclick="submitSettings()">Save</button>
+  <script>
+    // Call the server-side function to retrieve the current settings
+    google.script.run.withSuccessHandler(populateSettings).getConfig();
+
+    // Populate the form fields with the retrieved settings
+    function populateSettings(config) {
+      if (config){
+          document.getElementById('calendarId').value = config.calendarId || '';
+          document.getElementById('employeeId').value = config.employeeId || '';
+          var colorMappings = config.colorMappings || {};
+          for (var color in colorMappings) {
+            if (colorMappings.hasOwnProperty(color)) {
+              document.getElementById(color + '_project').value = colorMappings[color]?.project || '';
+              document.getElementById(color + '_job').value = colorMappings[color]?.job || '';
+            }
+          }
+      }
+    }
+
+    function submitSettings() {
+      var calendarId = document.getElementById('calendarId').value;
+      var employeeId = document.getElementById('employeeId').value;
+      var colorMappings = {
+        1: { project: document.getElementById('PALE_BLUE_project')?.value, job: document.getElementById('PALE_BLUE_job')?.value },
+        2: { project: document.getElementById('PALE_RED_project')?.value, job: document.getElementById('PALE_RED_job')?.value },
+        3: { project: document.getElementById('PALE_GREEN_project')?.value, job: document.getElementById('PALE_GREEN_job')?.value },
+        4: { project: document.getElementById('MAUVE_project')?.value, job: document.getElementById('MAUVE_job')?.value },
+        5: { project: document.getElementById('YELLOW_project')?.value, job: document.getElementById('YELLOW_job')?.value },
+        6: { project: document.getElementById('CYAN_project')?.value, job: document.getElementById('CYAN_job')?.value },
+      };
+      google.script.run.withSuccessHandler(closeDialog).setConfig(calendarId, employeeId, colorMappings);
+    }
+
+    function closeDialog() {
+      google.script.host.close();
+    }
+  </script>
+</body>
+</html>
