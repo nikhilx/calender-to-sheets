@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>Settings</title>
   <base target="_top">
@@ -9,17 +10,19 @@
       padding: 15px;
       background-color: #f7f7f7;
     }
-    label {
-      display: block;
-      margin: 10px 0;
-    }
-    input {
+
+    table {
       width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      border-collapse: collapse;
     }
+
+    th,
+    td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
     button {
       padding: 10px 20px;
       background-color: #4CAF50;
@@ -30,78 +33,206 @@
       display: block;
       margin: 15px auto;
     }
+
     button:hover {
       background-color: #45a049;
     }
+
+    #basicSettings {
+      display: block;
+    }
+
+    #jsonSettings {
+      display: none;
+    }
+
+    #jsonSettings button {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    #jsonInput {
+      width: 100%;
+      min-height: 200px;
+      /* You can adjust this value */
+    }
   </style>
 </head>
+
 <body>
   <h3>Settings</h3>
-  Calendar ID: <input type="text" id="calendarId"><br>
-  Zoho Employee ID: <input type="text" id="employeeId"><br>
-  <h4>Color Mappings:</h4>
-  <div>
-    <label>PALE BLUE</label>
-    Project: <input type="text" id="PALE_BLUE_project"><br>
-    Job: <input type="text" id="PALE_BLUE_job"><br>
-  </div>
-  <div>
-    <label>PALE RED</label>
-    Project: <input type="text" id="PALE_RED_project"><br>
-    Job: <input type="text" id="PALE_RED_job"><br>
-  </div>
-  <div>
-    <label>PALE GREEN</label>
-    Project: <input type="text" id="PALE_GREEN_project"><br>
-    Job: <input type="text" id="PALE_GREEN_job"><br>
-  </div>
-  <div>
-    <label>MAUVE</label>
-    Project: <input type="text" id="MAUVE_project"><br>
-    Job: <input type="text" id="MAUVE_job"><br>
-  </div>
-  <div>
-    <label>YELLOW</label>
-    Project: <input type="text" id="YELLOW_project"><br>
-    Job: <input type="text" id="YELLOW_job"><br>
-  </div>
-  <div>
-    <label>CYAN</label>
-    Project: <input type="text" id="CYAN_project"><br>
-    Job: <input type="text" id="CYAN_job"><br>
-  </div>
-  <button onclick="submitSettings()">Save</button>
-  <script>
-    // Call the server-side function to retrieve the current settings
-    google.script.run.withSuccessHandler(populateSettings).getConfig();
+  <label><input type="checkbox" id="toggleView" onclick="toggleSettingsView()"> Toggle JSON Settings
+    View</label><br><br>
 
-    // Populate the form fields with the retrieved settings
-    function populateSettings(config) {
-      if (config){
-          document.getElementById('calendarId').value = config.calendarId || '';
-          document.getElementById('employeeId').value = config.employeeId || '';
-          var colorMappings = config.colorMappings || {};
-          for (var color in colorMappings) {
-            if (colorMappings.hasOwnProperty(color)) {
-              document.getElementById(color + '_project').value = colorMappings[color]?.project || '';
-              document.getElementById(color + '_job').value = colorMappings[color]?.job || '';
-            }
-          }
+  <div id="tableSettings">
+    Calendar ID: <input type="text" id="calendarId"><br><br>
+    Zoho Employee ID: <input type="text" id="employeeId"><br>
+
+    <h4>Color Mappings:</h4>
+    <table id="colorMappingsTable" , aria-describedby="Settings">
+      <tr>
+        <th>Color</th>
+        <th>Project</th>
+        <th>Job</th>
+      </tr>
+      <tr>
+        <td>PALE BLUE</td>
+        <td><input type="text" id="PALE_BLUE_project"></td>
+        <td><input type="text" id="PALE_BLUE_job"></td>
+      </tr>
+      <tr>
+        <td>PALE GREEN</td>
+        <td><input type="text" id="PALE_GREEN_project"></td>
+        <td><input type="text" id="PALE_GREEN_job"></td>
+      </tr>
+      <tr>
+        <td>MAUVE</td>
+        <td><input type="text" id="MAUVE_project"></td>
+        <td><input type="text" id="MAUVE_job"></td>
+      </tr>
+      <tr>
+        <td>PALE RED</td>
+        <td><input type="text" id="PALE_RED_project"></td>
+        <td><input type="text" id="PALE_RED_job"></td>
+      </tr>
+      <tr>
+        <td>YELLOW</td>
+        <td><input type="text" id="YELLOW_project"></td>
+        <td><input type="text" id="YELLOW_job"></td>
+      </tr>
+      <tr>
+        <td>ORANGE</td>
+        <td><input type="text" id="ORANGE_project"></td>
+        <td><input type="text" id="ORANGE_job"></td>
+      </tr>
+      <tr>
+        <td>CYAN</td>
+        <td><input type="text" id="CYAN_project"></td>
+        <td><input type="text" id="CYAN_job"></td>
+      </tr>
+      <tr>
+        <td>GRAY</td>
+        <td><input type="text" id="GRAY_project"></td>
+        <td><input type="text" id="GRAY_job"></td>
+      </tr>
+      <tr>
+        <td>BLUE</td>
+        <td><input type="text" id="BLUE_project"></td>
+        <td><input type="text" id="BLUE_job"></td>
+      </tr>
+      <tr>
+        <td>GREEN</td>
+        <td><input type="text" id="GREEN_project"></td>
+        <td><input type="text" id="GREEN_job"></td>
+      </tr>
+      <tr>
+        <td>RED</td>
+        <td><input type="text" id="RED_project"></td>
+        <td><input type="text" id="RED_job"></td>
+      </tr>
+    </table>
+    <button onclick="submitSettings()">Save</button>
+  </div>
+  <!-- JSON Settings -->
+  <div id="jsonSettings">
+    <h3>Advanced Settings (JSON Input)</h3>
+    <a href="https://developers.google.com/apps-script/reference/calendar/event-color">Color Codes</a><br><br>
+    <label for="jsonInput">Input JSON Configuration:</label>
+    <textarea id="jsonInput" rows="10"></textarea>
+    <button onclick="validateJSONSettings()">Validate</button>
+    <button onclick="submitJSONSettings()">Submit</button>
+  </div>
+
+  <script>
+    var colorCodes;
+
+    google.script.run.withSuccessHandler(function (codes) {
+      colorCodes = codes;
+      // Now that colorCodes is defined, get the config
+      google.script.run.withSuccessHandler(populateSettings).getConfig();
+    }).getColorCodes();
+
+    // Function to toggle view
+    function toggleSettingsView() {
+      var tableView = document.getElementById('tableSettings');
+      var jsonView = document.getElementById('jsonSettings');
+      if (document.getElementById('toggleView').checked) {
+        tableView.style.display = 'none';
+        jsonView.style.display = 'block';
+      } else {
+        tableView.style.display = 'block';
+        jsonView.style.display = 'none';
       }
+    }
+
+    // Function to validate JSON
+    function validateJSONSettings() {
+      var jsonSettings = document.getElementById('jsonInput').value;
+      try {
+        JSON.parse(jsonSettings);
+        alert('Valid JSON!');
+      } catch (error) {
+        alert('Invalid JSON. Please check your input.');
+      }
+    }
+
+    // Function to submit JSON (similar to previous)
+    function submitJSONSettings() {
+      var jsonSettings = document.getElementById('jsonInput').value;
+      try {
+        var config = JSON.parse(jsonSettings);
+        google.script.run.withSuccessHandler(closeDialog).setConfig(config);
+      } catch (error) {
+        alert('Invalid JSON. Please check your input.');
+      }
+    }
+    function populateSettings(config) {
+      if (config) {
+        document.getElementById('calendarId').value = config.calendarId || '';
+        document.getElementById('employeeId').value = config.employeeId || '';
+
+        var colorMappings = config.colorMappings;
+
+        // Iterate through the color codes to get corresponding values
+        Object.values(colorCodes).forEach(function (colorCode) {
+          if (colorCode) {
+            var projectValue = colorMappings[colorCode]?.project || '';
+            var jobValue = colorMappings[colorCode]?.job || '';
+
+            // Get the color name based on the color code
+            var colorName = getKeyByValue(colorCodes, colorCode);
+
+            document.getElementById(colorName + '_project').value = projectValue;
+            document.getElementById(colorName + '_job').value = jobValue;
+          }
+        });
+
+        // Update the JSON view with the current settings
+        document.getElementById('jsonInput').value = JSON.stringify(config, null, 2);
+      }
+    }
+
+    // Helper function to find key by value in an object
+    function getKeyByValue(object, value) {
+      return Object.keys(object).find(key => object[key] === value);
     }
 
     function submitSettings() {
       var calendarId = document.getElementById('calendarId').value;
       var employeeId = document.getElementById('employeeId').value;
       var colorMappings = {
-        1: { project: document.getElementById('PALE_BLUE_project')?.value, job: document.getElementById('PALE_BLUE_job')?.value },
-        2: { project: document.getElementById('PALE_RED_project')?.value, job: document.getElementById('PALE_RED_job')?.value },
-        3: { project: document.getElementById('PALE_GREEN_project')?.value, job: document.getElementById('PALE_GREEN_job')?.value },
-        4: { project: document.getElementById('MAUVE_project')?.value, job: document.getElementById('MAUVE_job')?.value },
-        5: { project: document.getElementById('YELLOW_project')?.value, job: document.getElementById('YELLOW_job')?.value },
-        6: { project: document.getElementById('CYAN_project')?.value, job: document.getElementById('CYAN_job')?.value },
+        [colorCodes.PALE_BLUE]: { project: document.getElementById('PALE_BLUE_project')?.value, job: document.getElementById('PALE_BLUE_job')?.value },
+        [colorCodes.PALE_GREEN]: { project: document.getElementById('PALE_GREEN_project')?.value, job: document.getElementById('PALE_GREEN_job')?.value },
+        [colorCodes.MAUVE]: { project: document.getElementById('MAUVE_project')?.value, job: document.getElementById('MAUVE_job')?.value },
+        [colorCodes.PALE_RED]: { project: document.getElementById('PALE_RED_project')?.value, job: document.getElementById('PALE_RED_job')?.value },
+        [colorCodes.YELLOW]: { project: document.getElementById('YELLOW_project')?.value, job: document.getElementById('YELLOW_job')?.value },
+        [colorCodes.CYAN]: { project: document.getElementById('CYAN_project')?.value, job: document.getElementById('CYAN_job')?.value },
+        [colorCodes.GRAY]: { project: document.getElementById('GRAY_project')?.value, job: document.getElementById('GRAY_job')?.value },
+        [colorCodes.BLUE]: { project: document.getElementById('BLUE_project')?.value, job: document.getElementById('BLUE_job')?.value },
+        [colorCodes.GREEN]: { project: document.getElementById('GREEN_project')?.value, job: document.getElementById('GREEN_job')?.value },
+        [colorCodes.RED]: { project: document.getElementById('RED_project')?.value, job: document.getElementById('RED_job')?.value }
       };
-      google.script.run.withSuccessHandler(closeDialog).setConfig(calendarId, employeeId, colorMappings);
+      google.script.run.withSuccessHandler(closeDialog).setConfig({ calendarId, employeeId, colorMappings });
     }
 
     function closeDialog() {
@@ -109,4 +240,5 @@
     }
   </script>
 </body>
+
 </html>

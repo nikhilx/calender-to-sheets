@@ -5,7 +5,7 @@ const onOpen = () => {
     ];
 
     const activeSheet = SpreadsheetApp.getActiveSpreadsheet();
-    activeSheet.addMenu('Import Calendar', menuEntries);
+    activeSheet.addMenu('Import Timesheet', menuEntries);
 } 
 
 function importCalendarEntries(startDateStr: string, endDateStr: string) {
@@ -28,24 +28,35 @@ function importCalendarEntries(startDateStr: string, endDateStr: string) {
   range.setValues([["Date", "Project", "Job Name", "Work Item", "Hours", "Description", "EmployeeID"]]);
   range.setFontWeight("bold");
 
-  // Display events
-  for (let i = 0; i < events.length; i++) {
-    let row = i + 2; // starting from the second row
-    let event = events[i];
+  // {eventName_eventDay: <values according to headers>}. Doing this as events on the same name
+  // on the same day needs to have their duration added instead of having two rows in the csv
+  const csvRowsObject = {}
+
+  for (const event of events) {
     let duration = (event.getEndTime().getTime() - event.getStartTime().getTime()) / (60 * 60 * 1000); // Duration in hours
     let color = event.getColor();
     Logger.log(`${event.getTitle()}: COLOR: ${color}`)
     let projectName = colorMappings[color]?.project || "Unknown";
     let jobName = colorMappings[color]?.job || "Unknown";
-
     let eventDate = Utilities.formatDate(event.getStartTime(), Session.getScriptTimeZone(), "dd-MMM-yyyy");
 
-    let details = [
-      [eventDate, projectName, jobName, event.getTitle(), duration, event.getDescription(), config.employeeID]
-    ];
-
-    range = sheet.getRange(row, 1, 1, 7);
-    range.setValues(details);
-    sheet.getRange(row, 5).setNumberFormat('0.00'); // Format the Hours column
+    const lookupKey = `${event.getTitle()}_${eventDate}`
+    if (csvRowsObject.hasOwnProperty(lookupKey)){
+      // Add duration for an existing event on the same day
+      csvRowsObject[lookupKey][4] += duration
+    } else {
+      // create a new row
+      csvRowsObject[lookupKey] = [eventDate, projectName, jobName, event.getTitle(), duration, event.getDescription(), config.employeeID];
+    }
   }
+
+   // Write the csvRowsObject to the sheet
+   let row = 2; // starting from the second row
+   for (let key in csvRowsObject) {
+     let details = [csvRowsObject[key]];
+     range = sheet.getRange(row, 1, 1, 7);
+     range.setValues(details);
+     sheet.getRange(row, 5).setNumberFormat('0.00'); // Format the Hours column
+     row++;
+   }
 }
