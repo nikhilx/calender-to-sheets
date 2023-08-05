@@ -25,7 +25,7 @@ function importCalendarEntries(startDateStr: string, endDateStr: string) {
   // Prepare the target sheet
   let sheet = SpreadsheetApp.getActiveSheet();
   let range = sheet.getRange("A1:G1");
-  range.setValues([["Date", "Project", "Job Name", "Work Item", "Hours", "Description", "EmployeeID"]]);
+  range.setValues([["Date", "Project Name", "Job Name", "Work Item", "Hours", "Description", "Employee id"]]);
   range.setFontWeight("bold");
 
   // {eventName_eventDay: <values according to headers>}. Doing this as events on the same name
@@ -35,9 +35,8 @@ function importCalendarEntries(startDateStr: string, endDateStr: string) {
   for (const event of events) {
     let duration = (event.getEndTime().getTime() - event.getStartTime().getTime()) / (60 * 60 * 1000); // Duration in hours
     let color = event.getColor();
-    Logger.log(`${event.getTitle()}: COLOR: ${color}`)
-    let projectName = colorMappings[color]?.project || "Unknown";
-    let jobName = colorMappings[color]?.job || "Unknown";
+    let projectName = colorMappings[color]?.project || "";
+    let jobName = colorMappings[color]?.job || "";
     let eventDate = Utilities.formatDate(event.getStartTime(), Session.getScriptTimeZone(), "dd-MMM-yyyy");
 
     const lookupKey = `${event.getTitle()}_${eventDate}`
@@ -46,7 +45,7 @@ function importCalendarEntries(startDateStr: string, endDateStr: string) {
       csvRowsObject[lookupKey][4] += duration
     } else {
       // create a new row
-      csvRowsObject[lookupKey] = [eventDate, projectName, jobName, event.getTitle(), duration, event.getDescription(), config.employeeID];
+      csvRowsObject[lookupKey] = [eventDate, projectName, jobName, event.getTitle(), duration, event.getDescription(), config.employeeId];
     }
   }
 
