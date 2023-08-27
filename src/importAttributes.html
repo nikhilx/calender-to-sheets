@@ -47,7 +47,7 @@
 
     // Adjust for the time zone offset
     firstDay.setMinutes(firstDay.getMinutes() - firstDay.getTimezoneOffset());
-    date.setMinutes(lastDay.getMinutes() - lastDay.getTimezoneOffset());
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
 
     // Convert to YYYY-MM-DD format
     firstDay = firstDay.toISOString().split('T')[0];
