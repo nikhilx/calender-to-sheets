@@ -51,11 +51,21 @@ function importCalendarEntries(startDateStr: string, endDateStr: string) {
 
    // Write the csvRowsObject to the sheet
    let row = 2; // starting from the second row
+   let lastEventDate = null; // to track the last event's date
    for (let key in csvRowsObject) {
+     let currentEventDate = csvRowsObject[key][0]; // Extract the date from the current event details
+
+     if(lastEventDate && currentEventDate !== lastEventDate) {
+        sheet.getRange(row, 1, 1, 7).setValues([["", "", "", "", "", "", ""]]);
+        row++;
+     }
+
      let details = [csvRowsObject[key]];
      range = sheet.getRange(row, 1, 1, 7);
      range.setValues(details);
      sheet.getRange(row, 5).setNumberFormat('0.00'); // Format the Hours column
      row++;
+     
+     lastEventDate = currentEventDate  
    }
 }
