@@ -44,19 +44,18 @@
   <script>
     var date = new Date();
     var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
     // Adjust for the time zone offset
     firstDay.setMinutes(firstDay.getMinutes() - firstDay.getTimezoneOffset());
-    lastDay.setMinutes(lastDay.getMinutes() - lastDay.getTimezoneOffset());
+    date.setMinutes(lastDay.getMinutes() - lastDay.getTimezoneOffset());
 
     // Convert to YYYY-MM-DD format
     firstDay = firstDay.toISOString().split('T')[0];
-    lastDay = lastDay.toISOString().split('T')[0];
+    var today = date.toISOString().split('T')[0];
 
     // Pre-fill the startDate and endDate
     document.getElementById('startDate').value = firstDay;
-    document.getElementById('endDate').value = lastDay;
+    document.getElementById('endDate').value = today;
 
     function submitAttributes() {
       var startDate = document.getElementById('startDate').value;
