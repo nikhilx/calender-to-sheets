@@ -17,8 +17,8 @@ function importCalendarEntries(startDateStr: string, endDateStr: string) {
 
   // Convert startDate and endDate to Date objects
   const startDate = new Date(startDateStr);
-  const endDate = new Date(endDateStr);
-
+  const endDate = new Date(endDateStr)
+  endDate.setHours(23, 59, 59, 999);
   // Get events based on filters
   const events = calendar.getEvents(startDate, endDate);
 
@@ -43,9 +43,10 @@ function importCalendarEntries(startDateStr: string, endDateStr: string) {
     if (csvRowsObject.hasOwnProperty(lookupKey)){
       // Add duration for an existing event on the same day
       csvRowsObject[lookupKey][4] += duration
+      csvRowsObject[lookupKey][5] += `\n• ${event.getDescription()}`;
     } else {
       // create a new row
-      csvRowsObject[lookupKey] = [eventDate, projectName, jobName, event.getTitle(), duration, event.getDescription(), config.employeeId];
+      csvRowsObject[lookupKey] = [eventDate, projectName, jobName, event.getTitle(), duration, `• ${event.getDescription()}`, config.employeeId];
     }
   }
 
