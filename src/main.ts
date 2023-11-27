@@ -27,9 +27,8 @@ function importCalendarEntries(startDateStr: string, endDateStr: string) {
   let range = sheet.getRange("A1:G1");
   range.setValues([["Date", "Project Name", "Job Name", "Work Item", "Hours", "Description", "Employee id"]]);
   range.setFontWeight("bold");
+  sheet.setFrozenRows(1)
 
-  // {eventName_eventDay: <values according to headers>}. Doing this as events on the same name
-  // on the same day needs to have their duration added instead of having two rows in the csv
   const csvRowsObject = {}
 
   for (const event of events) {
@@ -37,16 +36,22 @@ function importCalendarEntries(startDateStr: string, endDateStr: string) {
     let color = event.getColor();
     let projectName = colorMappings[color]?.project || "";
     let jobName = colorMappings[color]?.job || "";
+    let description = event.getDescription()
     let eventDate = Utilities.formatDate(event.getStartTime(), Session.getScriptTimeZone(), "dd-MMM-yyyy");
 
+    // {eventName_eventDay: <values according to headers>}. Doing this as events on the same name
+    // on the same day needs to have their duration added instead of having two rows in the csv
     const lookupKey = `${event.getTitle()}_${eventDate}`
     if (csvRowsObject.hasOwnProperty(lookupKey)){
       // Add duration for an existing event on the same day
       csvRowsObject[lookupKey][4] += duration
-      csvRowsObject[lookupKey][5] += `\n• ${event.getDescription()}`;
+      if (description) {
+        csvRowsObject[lookupKey][5] += `\n• ${description}`;
+      }
     } else {
+      description = description ? `• ${event.getDescription()}` : "";
       // create a new row
-      csvRowsObject[lookupKey] = [eventDate, projectName, jobName, event.getTitle(), duration, `• ${event.getDescription()}`, config.employeeId];
+      csvRowsObject[lookupKey] = [eventDate, projectName, jobName, event.getTitle(), duration, description, config.employeeId];
     }
   }
 
